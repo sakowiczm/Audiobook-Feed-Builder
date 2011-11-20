@@ -51,6 +51,9 @@ namespace FeedGenerator
             if (filePath != null)
             {
                 FileStream fileStream = File.OpenRead(filePath);
+
+                // todo: deal with oom excepiton on large files
+
                 byte[] buffer = new byte[fileStream.Length];
                 fileStream.Read(buffer, 0, (int)fileStream.Length);
                 fileStream.Close();

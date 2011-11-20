@@ -9,6 +9,7 @@ namespace FeedGenerator
     public class FeedBuilder
     {
         public int Port { get; private set; }
+        //public string FeedUrl { get; private set; }
 
         public FeedBuilder(int port)
         {

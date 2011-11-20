@@ -1,34 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using Microsoft.Win32;
+
+/* todo:
+ * - add multiple files at once, extend file filtering option
+ * - files up/down, remove
+ */
 
 namespace FeedGenerator
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+
+            Files = new ObservableCollection<string>();
+            lstFiles.ItemsSource = Files;
         }
 
-        //static Server server = new Server();
-        Task _task;
+        private Task _task;
+        public ObservableCollection<string> Files { get; set; }
+        public string ImagePath { get; set; }
 
         private void btnStartServer_Click(object sender, RoutedEventArgs e)
         {
-            //todo:
-            int port = 8050;
-            string feedTitle = "Michal test feed";
-            var filePaths = new List<string>();
-            filePaths.Add(@"c:\@Downloads\Podcasts\odkryj_swoje_przekonania-michal_pasterski.mp3");
-            filePaths.Add(@"c:\@Downloads\Podcasts\odrzuc_perfekcjonizm_i_dzialaj - michal_pasterski.mp3");
+            int port = string.IsNullOrWhiteSpace(txtPort.Text) ? 6000 : Convert.ToInt32(txtPort.Text);
+            string feedTitle = txtTitle.Text ?? "Default title";
+            var filePaths = new List<string>(Files);
 
-            var imagePath = @"c:\@Downloads\ms.jpg";
+            _task = Task.Factory.StartNew(() => new Server(port, feedTitle, filePaths, ImagePath).Start());
 
-            _task = Task.Factory.StartNew(() => new Server(port, feedTitle, filePaths, imagePath).Start());
+            // todo: feed url should be returned by the Server
+            txtGeneratedFeed.Text = string.Format(@"http://localhost:{0}/{1}", port, "feed.xml");
         }
 
         private void btnStopServer_Click(object sender, RoutedEventArgs e)
@@ -37,6 +45,46 @@ namespace FeedGenerator
             // todo: cancelation service
             //server.Stop();
             MessageBox.Show(_task.IsCompleted.ToString());
+        }
+
+        private void btnAddFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.DefaultExt = ".mp3";
+            dlg.Filter = "Mp3 file (.mp3)|*.mp3";
+
+            bool? result = dlg.ShowDialog();
+
+            if(!result.HasValue || result == false)
+                return;
+
+            Files.Add(dlg.FileName);
+        }
+
+        private void btnAddCover_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.DefaultExt = ".jpg";
+            dlg.Filter = "Jpg file (.jpg)|*.jpg";
+
+            bool? result = dlg.ShowDialog();
+
+            if (!result.HasValue || result == false)
+                return;
+
+            ImagePath = dlg.FileName;
+            imgCover.Source = new BitmapImage(new Uri(ImagePath));
+        }
+
+        private void btnClearCover_Click(object sender, RoutedEventArgs e)
+        {
+            ImagePath = null;
+            imgCover.Source = null;
+        }
+
+        private void btnRemoveFile_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }

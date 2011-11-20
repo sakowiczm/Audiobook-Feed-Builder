@@ -40,7 +40,7 @@ namespace FeedGenerator
                                                     }
                                   };
 
-                response.OnResponse(headers, new BufferedProducer(body));
+                response.OnResponse(headers, new SimpleProducer(body));
                 return;
             }
 
@@ -50,14 +50,7 @@ namespace FeedGenerator
 
             if (filePath != null)
             {
-                FileStream fileStream = File.OpenRead(filePath);
-
-                // todo: deal with oom excepiton on large files
-
-                byte[] buffer = new byte[fileStream.Length];
-                fileStream.Read(buffer, 0, (int)fileStream.Length);
-                fileStream.Close();
-
+                FileInfo fi = new FileInfo(filePath);
                 string mimeType = GetMimeType(filePath);
 
                 var headers = new HttpResponseHead()
@@ -66,11 +59,11 @@ namespace FeedGenerator
                                       Headers = new Dictionary<string, string>() 
                                                     {
                                                         { "Content-Type", mimeType },
-                                                        { "Content-Length", buffer.Length.ToString() },
+                                                        { "Content-Length", fi.Length.ToString() },
                                                     }
                                   };
 
-                response.OnResponse(headers, new BufferedProducer(buffer));
+                response.OnResponse(headers, new FileProducer(filePath));
                 return;                
             }
             else
@@ -85,7 +78,7 @@ namespace FeedGenerator
                                                         { "Content-Length", responseBody.Length.ToString() }
                                                     }
                                   };
-                var body = new BufferedProducer(responseBody);
+                var body = new SimpleProducer(responseBody);
 
                 response.OnResponse(headers, body);
                 return;

@@ -68,7 +68,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BufferedProducer.cs" />
+    <Compile Include="Producers\FileProducer.cs" />
+    <Compile Include="Producers\SimpleProducer.cs" />
     <Compile Include="FeedBuilder.cs" />
     <Compile Include="RequestDelegate.cs" />
     <Compile Include="SchedulerDelegate.cs" />

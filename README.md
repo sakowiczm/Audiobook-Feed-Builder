@@ -1,9 +1,9 @@
-About Audiobook Feed Builder
+ï»¿About Audiobook Feed Builder
 ----------------------------
 
 This small utility was created as a breakable toy to play with [Kayak]. But it also solves real issue. 
 
-If you listen to audio books and you are a user of WP7 device – you probably already know that Zune won’t allow you to copy your files in a ‘podcast mode’ - in a way that phone remembers last position of a file you were listening. Well, unless you feed them to Zune via RSS - this tool allows you to generate local RSS feed.
+If you listen to audio books and you are a user of WP7 device â€“ you probably already know that Zune wonâ€™t allow you to copy your files in a â€˜podcast modeâ€™ - in a way that phone remembers last position of a file you were listening. Well, unless you feed them to Zune via RSS - this tool allows you to generate local RSS feed.
 
 Usage
 -----
